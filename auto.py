@@ -1,5 +1,13 @@
 import subprocess, platform, csv, random, string, time
 
+lista = []
+listRow = 1
+command = "None"
+chars = "abcdefghijklmnopqrstuvwxyz"
+chars1 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+chars2 = "1234567890"
+chars3 = "!%&/()=#"
+
 try:
     filnamn = str(input("Ange .csv filnamn: "))
 except:
@@ -14,10 +22,6 @@ except:
     print("Antal användare automatiskt angivet som 1")
     amountOfUsers = 1
 
-lista = []
-listRow = 1
-command = "None"
-
 with open(str(filnamn), newline='') as myFile:
     reader = csv.reader(myFile)
     for row in reader:
@@ -31,10 +35,6 @@ def listAssign():
     return (uName,uGivenName,uSurname,uAccountName)
 
 def createPassword():
-    chars = "abcdefghijklmnopqrstuvwxyz"
-    chars1 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    chars2 = "1234567890"
-    chars3 = "!%&/()=#"
     uPassword = ""
     for bomboclaat in range (3):
         uPassword += random.choice(chars)
@@ -66,12 +66,16 @@ else:
 while listRow < amountOfUsers:
     uPassword = createPassword()
     uName, uGivenName, uSurname, uAccountName = listAssign()
-    cmd = 'New-ADUser -name "' + uName + '" -GivenName "' + uGivenName + '" -Surname "' + uSurname + '" -SamAccountName "' + uAccountName + '" -AccountPassword "' + uPassword + '" -Enable $true'
+    cmd = 'New-ADUser -name "' + uName + '" -GivenName "' + uGivenName + '" -Surname "' + uSurname + '" -SamAccountName "' + uAccountName + '" -AccountPassword (ConvertTo-SecureString "' + uPassword + '"  -AsPlainText -force) -passThru  -Enable $true'
+    #unix = 'useradd -p' + uPassword '-c “' + uName + uSurname + '” -m ' + uAccountName
     if OpS == "windows":
         command = cmd
     else:
         command = unix
-
-    returned_value = subprocess.call(command, shell=True)
+    lista[listRow].append(uPassword)
+    print(lista[listRow])
+    print(cmd)
+   # returned_value = subprocess.call(command, shell=True)
     listRow += 1
-print("returned_value: ", returned_value)
+print(lista)
+#print("returned_value: ", returned_value)
