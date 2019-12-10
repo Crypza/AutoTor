@@ -25,7 +25,16 @@ except:
 with open(str(filnamn), newline='') as myFile:
     reader = csv.reader(myFile)
     for row in reader:
-        lista.append(row)
+        if len(row) < 4:
+            del row
+        else:
+            lista.append(row)
+
+def csvWriter():
+    with open(str(filnamn), 'w') as myFile:
+        writer = csv.writer(myFile)
+        for row in lista:
+            writer.writerow(row)
 
 def listAssign():
     uName = str(lista[listRow][0])
@@ -72,10 +81,19 @@ while listRow < amountOfUsers:
         command = cmd
     else:
         command = unix
+
+    if len(lista[listRow]) > 4:
+        del lista[listRow][4]
+        print(lista[listRow])
+    else:
+        pass
+
     lista[listRow].append(uPassword)
-    print(lista[listRow])
-    print(cmd)
+    #print(lista[listRow])
+    #print(cmd)
    # returned_value = subprocess.call(command, shell=True)
+    print(lista[listRow])
     listRow += 1
-print(lista)
+csvWriter()
+#print(lista)
 #print("returned_value: ", returned_value)
