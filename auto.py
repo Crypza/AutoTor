@@ -93,7 +93,7 @@ while listRow < amountOfUsers:
         uPassword = createPassword()
     else:
         pass
-    cmd = 'New-ADUser -name "' + uName + '" -GivenName "' + uGivenName + '" -Surname "' + uSurname + '" -SamAccountName "' + uAccountName + '" -AccountPassword (ConvertTo-SecureString "' + uPassword + '"  -AsPlainText -force) -passThru  -Enable $true'
+    cmd = 'New-ADUser -name "' + uName + '" -GivenName "' + uGivenName + '" -Surname "' + uSurname + '" -SamAccountName "' + uAccountName + '" -AccountPassword (ConvertTo-SecureString "' + uPassword + '"  -AsPlainText -force) -passThru -ChangePasswordAtLogon $True'
     unix = 'useradd -p' + uPassword + '-c "' + uName + uSurname + '" -m ' + uAccountName
     if OpS == "windows":
         command = cmd
