@@ -16,6 +16,17 @@ except:
     exit
 
 try:
+    preExistPass = str(input("Use pre-existing passwords from CSV file? [y]/[n]: ")).lower
+    if preExistPass == "y":
+        preExistPass = True
+    else:
+        preExistPass = False
+except:
+    print("error")
+    print("Invalid input, value set to False")
+    preExistPass = False
+
+try:
     amountOfUsers = int(input("Ange antal av användare att läsa in: ")) + 1
 except:
     print("error")
@@ -41,11 +52,15 @@ def listAssign():
     uGivenName = str(lista[listRow][1])
     uSurname = str(lista[listRow][2])
     uAccountName = str(lista[listRow][3])
-    return (uName,uGivenName,uSurname,uAccountName)
+    try:
+        uPassword = str(lista[listRow][4])
+    except IndexError:
+        uPassword = ''
+    return (uName,uGivenName,uSurname,uAccountName,uPassword)
 
 def createPassword():
     uPassword = ""
-    for bomboclaat in range (3):
+    while len(uPassword) < 12:
         uPassword += random.choice(chars)
         uPassword += random.choice(chars1)
         uPassword += random.choice(chars2)
@@ -73,10 +88,13 @@ else:
     exit
 
 while listRow < amountOfUsers:
-    uPassword = createPassword()
-    uName, uGivenName, uSurname, uAccountName = listAssign()
+    uName, uGivenName, uSurname, uAccountName, uPassword = listAssign()
+    if preExistPass == False:
+        uPassword = createPassword()
+    else:
+        pass
     cmd = 'New-ADUser -name "' + uName + '" -GivenName "' + uGivenName + '" -Surname "' + uSurname + '" -SamAccountName "' + uAccountName + '" -AccountPassword (ConvertTo-SecureString "' + uPassword + '"  -AsPlainText -force) -passThru  -Enable $true'
-    #unix = 'useradd -p' + uPassword '-c “' + uName + uSurname + '” -m ' + uAccountName
+    unix = 'useradd -p' + uPassword + '-c "' + uName + uSurname + '" -m ' + uAccountName
     if OpS == "windows":
         command = cmd
     else:
@@ -84,16 +102,13 @@ while listRow < amountOfUsers:
 
     if len(lista[listRow]) > 4:
         del lista[listRow][4]
-        print(lista[listRow])
     else:
         pass
 
     lista[listRow].append(uPassword)
-    #print(lista[listRow])
     #print(cmd)
-   # returned_value = subprocess.call(command, shell=True)
-    print(lista[listRow])
+    returned_value = subprocess.call(command, shell=True)
     listRow += 1
 csvWriter()
 #print(lista)
-#print("returned_value: ", returned_value)
+print("returned_value: ", returned_value)
