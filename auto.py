@@ -107,8 +107,8 @@ while listRow < amountOfUsers:
 
     lista[listRow].append(uPassword)
     #print(cmd)
-    returned_value = subprocess.call(command, shell=True)
+    #returned_value = subprocess.call(command, shell=True)
     listRow += 1
 csvWriter()
 #print(lista)
-print("returned_value: ", returned_value)
+#print("returned_value: ", returned_value)
